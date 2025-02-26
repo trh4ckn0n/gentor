@@ -22,13 +22,18 @@ def generate():
                                  json={"prefix": prefix, "count": count},
                                  headers={"Authorization": "Bearer MA_SUPER_CLE"})
 
-        print("Code HTTP VPS :", response.status_code)
-        print("Réponse brute VPS :", response.text)  # Afficher la réponse brute
+        data = response.json()  # Convertir la réponse en JSON
 
-        data = response.json()  # Convertir en JSON
-        return jsonify(data)  # Retourner les données à l'interface  # Retourner le JSON proprement
+        # Convertir en tableau
+        if "onion" in data:
+            onion_list = data["onion"].strip().split("\n")  # Split par ligne
+        else:
+            onion_list = []
+
+        return jsonify({"onions": onion_list})  # Envoyer un tableau JSON
     except Exception as e:
         print("Erreur connexion VPS :", str(e))
         return jsonify({"error": "Impossible de contacter le VPS"}), 500
-if __name__ == '__main__':
+        
+        if __name__ == '__main__':
     app.run(host="0.0.0.0", port=10000)
