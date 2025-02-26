@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur d'adresses .onion</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #0f0;
+            font-family: "Courier New", monospace;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #0ff;
+        }
+        input, button {
+            background-color: black;
+            color: #0f0;
+            border: 1px solid #0f0;
+            padding: 10px;
+            margin: 5px;
+        }
+        button {
+            cursor: pointer;
+        }
+        .output {
+            margin-top: 20px;
+            border: 1px solid #0ff;
+            padding: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Générateur d'adresses .onion</h1>
+    <p>Entrez un préfixe et sélectionnez le nombre d'adresses à générer :</p>
+    <input type="text" id="prefix" placeholder="Préfixe (ex: test)">
+    <input type="number" id="count" min="1" max="20" value="5">
+    <button onclick="generateOnion()">Générer</button>
+
+    <div id="result" class="output"></div>
+
+    <script>
+        function generateOnion() {
+            const prefix = document.getElementById("prefix").value;
+            const count = document.getElementById("count").value;
+            const resultDiv = document.getElementById("result");
+
+            resultDiv.innerHTML = "Génération en cours...";
+            resultDiv.style.display = "block";
+
+            fetch("/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prefix: prefix, count: count })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultDiv.innerHTML = `<span style="color:red;">Erreur: ${data.error}</span>`;
+                } else {
+                    resultDiv.innerHTML = "<strong>Adresses générées :</strong><br>" + 
+                        data.onions.map(onion => `<code>${onion}</code>`).join("<br>");
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<span style="color:red;">Erreur serveur</span>`;
+            });
+        }
+    </script>
+</body>
+</html>
