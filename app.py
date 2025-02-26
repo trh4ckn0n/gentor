@@ -35,5 +35,5 @@ def generate():
         print("Erreur connexion VPS :", str(e))
         return jsonify({"error": "Impossible de contacter le VPS"}), 500
         
-        if __name__ == '__main__':
+    if __name__ == '__main__':
     app.run(host="0.0.0.0", port=10000)
