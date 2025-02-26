@@ -3,7 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Générateur d'adresses .onion personnalisées avec un préfixe au choix.">
+    <meta name="keywords" content="onion, tor, dark web, générateur, sécurité, anonymat">
+    <meta name="author" content="trhacknon">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content="Générateur d'adresses .onion - trhacknon">
+    <meta property="og:description" content="Créez vos adresses .onion personnalisées avec ce générateur en ligne.">
+    <meta property="og:image" content="https://l.top4top.io/p_3344ntnwm0.png">
+    <meta property="og:url" content="https://gentor.onrender.com">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Générateur d'adresses .onion - trhacknon">
+    <meta name="twitter:description" content="Générez facilement vos adresses .onion personnalisées.">
+    <meta name="twitter:image" content="https://l.top4top.io/p_3344ntnwm0.png">
+
     <title>Générateur d'adresses .onion - trhacknon</title>
+
     <style>
         body {
             background-color: #121212;
@@ -29,6 +48,11 @@
             max-width: 600px;
             margin: auto;
             line-height: 1.4;
+        }
+        .warning {
+            font-size: 12px;
+            color: #ff6600;
+            margin-top: 10px;
         }
         input, button {
             background-color: black;
@@ -59,13 +83,18 @@
 </head>
 <body>
 
-    <div class="logo">trhacknon - Générateur .onion</div>
+    <div class="logo">trhacknon - V3 onion</div>
 
     <h1>Générateur d'adresses .onion</h1>
 
     <p class="description">
         Cet outil permet de générer des adresses .onion personnalisées en fonction du préfixe choisi. 
         Spécifiez un préfixe et le nombre d'adresses désiré, puis cliquez sur "Générer".
+    </p>
+
+    <p class="warning">
+        ⚠️ Plus le préfixe est long, plus la génération sera lente ou impossible.  
+        Le processus peut prendre plusieurs minutes en fonction de la demande.
     </p>
 
     <input type="text" id="prefix" placeholder="Préfixe (ex: test)">
@@ -80,7 +109,7 @@
             const count = document.getElementById("count").value;
             const resultDiv = document.getElementById("result");
 
-            resultDiv.innerHTML = "Génération en cours...";
+            resultDiv.innerHTML = "⏳ Génération en cours... Cela peut prendre du temps.";
             resultDiv.style.display = "block";
 
             fetch("/generate", {
@@ -91,14 +120,14 @@
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    resultDiv.innerHTML = `<span style="color:red;">Erreur: ${data.error}</span>`;
+                    resultDiv.innerHTML = `<span style="color:red;">❌ Erreur: ${data.error}</span>`;
                 } else {
-                    resultDiv.innerHTML = "<strong>Adresses générées :</strong><br>" + 
+                    resultDiv.innerHTML = "<strong>✅ Adresses générées :</strong><br>" + 
                         data.onions.map(onion => `<code>${onion}</code>`).join("<br>");
                 }
             })
             .catch(error => {
-                resultDiv.innerHTML = `<span style="color:red;">Erreur serveur</span>`;
+                resultDiv.innerHTML = `<span style="color:red;">❌ Erreur serveur</span>`;
             });
         }
     </script>
