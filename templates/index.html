@@ -51,23 +51,23 @@
             resultDiv.innerHTML = "Génération en cours...";
             resultDiv.style.display = "block";
 
-            fetch("/generate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prefix: prefix, count: count })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    resultDiv.innerHTML = `<span style="color:red;">Erreur: ${data.error}</span>`;
-                } else {
-                    resultDiv.innerHTML = "<strong>Adresses générées :</strong><br>" + 
-                        data.onions.map(onion => `<code>${onion}</code>`).join("<br>");
-                }
-            })
-            .catch(error => {
-                resultDiv.innerHTML = `<span style="color:red;">Erreur serveur</span>`;
-            });
+fetch("/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prefix: prefix, count: count })
+})
+.then(response => response.json())
+.then(data => {
+    if (data.error) {
+        resultDiv.innerHTML = `<span style="color:red;">Erreur: ${data.error}</span>`;
+    } else {
+        resultDiv.innerHTML = "<strong>Adresses générées :</strong><br>" + 
+            data.onions.map(onion => `<code>${onion}</code>`).join("<br>");
+    }
+})
+.catch(error => {
+    resultDiv.innerHTML = `<span style="color:red;">Erreur serveur</span>`;
+});
         }
     </script>
 </body>
