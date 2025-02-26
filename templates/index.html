@@ -20,9 +20,7 @@
     <meta name="twitter:title" content="Générateur d'adresses .onion - trhacknon">
     <meta name="twitter:description" content="Générez facilement vos adresses .onion personnalisées.">
     <meta name="twitter:image" content="https://l.top4top.io/p_3344ntnwm0.png">
-
     <title>Générateur d'adresses .onion - trhacknon</title>
-
     <style>
         body {
             background-color: #121212;
@@ -49,11 +47,6 @@
             margin: auto;
             line-height: 1.4;
         }
-        .warning {
-            font-size: 12px;
-            color: #ff6600;
-            margin-top: 10px;
-        }
         input, button {
             background-color: black;
             color: #0f0;
@@ -79,38 +72,43 @@
             padding: 10px;
             display: none;
         }
+        .key {
+            margin-top: 20px;
+            font-family: "Courier New", monospace;
+            white-space: pre-wrap;
+            background-color: #333;
+            padding: 10px;
+            color: #fff;
+            border: 1px solid #0ff;
+        }
     </style>
 </head>
 <body>
 
-    <div class="logo">trhacknon - V3 onion</div>
-
+    <div class="logo">trhacknon - Générateur .onion</div>
     <h1>Générateur d'adresses .onion</h1>
-
     <p class="description">
         Cet outil permet de générer des adresses .onion personnalisées en fonction du préfixe choisi. 
         Spécifiez un préfixe et le nombre d'adresses désiré, puis cliquez sur "Générer".
     </p>
 
-    <p class="warning">
-        ⚠️ Plus le préfixe est long, plus la génération sera lente ou impossible.  
-        Le processus peut prendre plusieurs minutes en fonction de la demande.
-    </p>
-
     <input type="text" id="prefix" placeholder="Préfixe (ex: test)">
-    <input type="number" id="count" min="1" max="5" value="3" oninput="this.value = parseInt(this.value) ? Math.min(5, Math.max(1, this.value)) : ''">
+    <input type="number" id="count" min="1" max="5" value="3">
     <button onclick="generateOnion()">Générer</button>
 
     <div id="result" class="output"></div>
+    <div id="keys" class="key"></div>
 
     <script>
         function generateOnion() {
             const prefix = document.getElementById("prefix").value;
             const count = document.getElementById("count").value;
             const resultDiv = document.getElementById("result");
+            const keysDiv = document.getElementById("keys");
 
-            resultDiv.innerHTML = "⏳ Génération en cours... Cela peut prendre du temps.";
+            resultDiv.innerHTML = "Génération en cours...";
             resultDiv.style.display = "block";
+            keysDiv.innerHTML = "";  // Clear previous keys
 
             fetch("/generate", {
                 method: "POST",
@@ -120,14 +118,20 @@
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-                    resultDiv.innerHTML = `<span style="color:red;">❌ Erreur: ${data.error}</span>`;
+                    resultDiv.innerHTML = `<span style="color:red;">Erreur: ${data.error}</span>`;
                 } else {
-                    resultDiv.innerHTML = "<strong>✅ Adresses générées :</strong><br>" + 
+                    resultDiv.innerHTML = "<strong>Adresses générées :</strong><br>" + 
                         data.onions.map(onion => `<code>${onion}</code>`).join("<br>");
+                    
+                    // Display the keys if they exist
+                    if (data.keys) {
+                        keysDiv.innerHTML = `<strong>Clé publique :</strong><br><code>${data.keys.public_key}</code><br><br>
+                                             <strong>Clé secrète :</strong><br><code>${data.keys.secret_key}</code>`;
+                    }
                 }
             })
             .catch(error => {
-                resultDiv.innerHTML = `<span style="color:red;">❌ Erreur serveur</span>`;
+                resultDiv.innerHTML = `<span style="color:red;">Erreur serveur</span>`;
             });
         }
     </script>
