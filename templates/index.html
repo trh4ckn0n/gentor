@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur d'adresses .onion</title>
+    <title>Générateur d'adresses .onion - trhacknon</title>
     <style>
         body {
             background-color: #121212;
@@ -14,6 +14,21 @@
         }
         h1 {
             color: #0ff;
+            text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+            margin-bottom: 10px;
+        }
+        .description {
+            font-size: 14px;
+            color: #bbb;
+            max-width: 600px;
+            margin: auto;
+            line-height: 1.4;
         }
         input, button {
             background-color: black;
@@ -21,9 +36,18 @@
             border: 1px solid #0f0;
             padding: 10px;
             margin: 5px;
+            font-size: 16px;
         }
         button {
             cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            border: 2px solid #0f0;
+        }
+        button:hover {
+            background-color: #0f0;
+            color: black;
+            box-shadow: 0 0 10px #0f0;
         }
         .output {
             margin-top: 20px;
@@ -34,8 +58,16 @@
     </style>
 </head>
 <body>
+
+    <div class="logo">trhacknon - Générateur .onion</div>
+
     <h1>Générateur d'adresses .onion</h1>
-    <p>Entrez un préfixe et sélectionnez le nombre d'adresses à générer :</p>
+
+    <p class="description">
+        Cet outil permet de générer des adresses .onion personnalisées en fonction du préfixe choisi. 
+        Spécifiez un préfixe et le nombre d'adresses désiré, puis cliquez sur "Générer".
+    </p>
+
     <input type="text" id="prefix" placeholder="Préfixe (ex: test)">
     <input type="number" id="count" min="1" max="20" value="5">
     <button onclick="generateOnion()">Générer</button>
@@ -51,24 +83,25 @@
             resultDiv.innerHTML = "Génération en cours...";
             resultDiv.style.display = "block";
 
-fetch("/generate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prefix: prefix, count: count })
-})
-.then(response => response.json())
-.then(data => {
-    if (data.error) {
-        resultDiv.innerHTML = `<span style="color:red;">Erreur: ${data.error}</span>`;
-    } else {
-        resultDiv.innerHTML = "<strong>Adresses générées :</strong><br>" + 
-            data.onions.map(onion => `<code>${onion}</code>`).join("<br>");
-    }
-})
-.catch(error => {
-    resultDiv.innerHTML = `<span style="color:red;">Erreur serveur</span>`;
-});
+            fetch("/generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prefix: prefix, count: count })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    resultDiv.innerHTML = `<span style="color:red;">Erreur: ${data.error}</span>`;
+                } else {
+                    resultDiv.innerHTML = "<strong>Adresses générées :</strong><br>" + 
+                        data.onions.map(onion => `<code>${onion}</code>`).join("<br>");
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = `<span style="color:red;">Erreur serveur</span>`;
+            });
         }
     </script>
+
 </body>
 </html>
