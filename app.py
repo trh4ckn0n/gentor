@@ -18,22 +18,21 @@ def generate():
         return jsonify({"error": "Préfixe requis"}), 400
 
     try:
-        response = requests.post("http://154.12.234.206:5000/generate",
+        response = requests.post(f"{VPS_API_URL}/generate",
                                  json={"prefix": prefix, "count": count},
                                  headers={"Authorization": "Bearer MA_SUPER_CLE"})
 
         data = response.json()  # Convertir la réponse en JSON
 
-        # Convertir en tableau
-        if "onion" in data:
-            onion_list = data["onion"].strip().split("\n")  # Split par ligne
-        else:
-            onion_list = []
+        # Convertir en tableau si "onion" est présent
+        onion_list = data["onion"].strip().split("\n") if "onion" in data else []
 
         return jsonify({"onions": onion_list})  # Envoyer un tableau JSON
+
     except Exception as e:
         print("Erreur connexion VPS :", str(e))
         return jsonify({"error": "Impossible de contacter le VPS"}), 500
-        
-    if __name__ == '__main__':
-        app.run(host="0.0.0.0", port=10000)
+
+# 🔥 Ce bloc doit être en dehors de la fonction !
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=10000)
