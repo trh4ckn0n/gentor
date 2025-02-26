@@ -1,7 +1,7 @@
 import requests
 from flask import Flask, request, jsonify, render_template
 
-VPS_API_URL = "http://vmi850151.contaboserver.net:5000/generate"
+VPS_API_URL = "http://154.12.234.206:5000"
 
 app = Flask(__name__)
 
