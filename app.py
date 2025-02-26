@@ -18,10 +18,14 @@ def generate():
         return jsonify({"error": "Préfixe requis"}), 400
 
     try:
-        response = requests.post(VPS_API_URL, json={"prefix": prefix, "count": count})
-        return jsonify(response.json())
+        response = requests.post("http://vmi850151.contaboserver.net:5000/generate",
+                                 json={"prefix": prefix, "count": count},
+                                 headers={"Authorization": "Bearer MA_SUPER_CLE"})
+        data = response.json()  # Convertir la réponse en JSON
+        print("Réponse VPS :", data)  # Log pour debug
+        return jsonify(data)  # Retourner le JSON proprement
     except Exception as e:
+        print("Erreur connexion VPS :", str(e))
         return jsonify({"error": "Impossible de contacter le VPS"}), 500
-
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=10000)
